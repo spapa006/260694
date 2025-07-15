@@ -9,7 +9,36 @@ from dotenv import load_dotenv
 import os
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+# في بداية الملف
+import db_connector
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
+# تهيئة قاعدة البيانات عند البدء
+db_conn = db_connector.init_db()
+if not db_conn:
+    logger.error("فشل في الاتصال بقاعدة البيانات، سيتوقف البرنامج")
+    exit(1)
+
+# استمرار الكود الخاص بك (مثل تجديد التوكن، جلب الإعلانات)
+
+while True:
+    try:
+        # تجديد التوكن (استبدل بكودك الفعلي)
+        logger.info("جارٍ تجديد التوكن...")
+        # جلب الإعلانات وتحديثها
+        logger.info("جارٍ جلب الإعلانات...")
+        creative_id = "4c1cd6e6-2a77-4dc9-8f12-ae004604602e"
+        new_headline = "عرض مثير جديد!"  # استبدل بمنطقك الفعلي
+        db_connector.log_update(db_conn, creative_id, new_headline, "SUCCESS", "")
+    except Exception as e:
+        logger.error(f"خطأ في التشغيل: {str(e)}")
+        db_connector.log_update(db_conn, creative_id, new_headline, "FAILED", str(e))
+    time.sleep(3600)  # انتظر ساعة
+
+# إغلاق الاتصال عند الانتهاء (اختياري، يمكن إضافته إذا كان هناك انتهاء)
+db_connector.close_db(db_conn)
 # إعداد التسجيل
 logging.basicConfig(
     filename='snapchat_ads_bot.log',
